@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart To-Do List App</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* === Import Fonts === */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    /* === Global Reset & Background === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* === Glassmorphism Background Layers === */
+    body::before, body::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.25;
+      z-index: 0;
+      animation: float 16s ease-in-out infinite alternate;
+    }
+
+    body::before {
+      width: 600px;
+      height: 600px;
+      background: #ff6ec4;
+      top: -100px;
+      left: -150px;
+    }
+
+    body::after {
+      width: 500px;
+      height: 500px;
+      background: #42a5f5;
+      bottom: -120px;
+      right: -120px;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0); }
+      100% { transform: translateY(-30px) rotate(360deg); }
+    }
+
+    /* === App Container === */
+    .app {
+      position: relative;
+      z-index: 1;
+      width: 420px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* === Header with Refresh === */
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: #00e676;
+      margin-top: 6px;
+      border-radius: 3px;
+    }
+
+    .refresh-btn {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      color: #00b0ff;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .refresh-btn:hover {
+      transform: rotate(90deg);
+    }
+
+    /* === Input Area === */
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 8px;
+      background: #ffffff11;
+      color: #fff;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+
+    input[type="text"]::placeholder {
+      color: #ccc;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      background: #ffffff22;
+    }
+
+    button {
+      padding: 10px 16px;
+      background: #00e676;
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #00c853;
+    }
+
+    /* === Search Input === */
+    #searchInput {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 8px;
+      background: #ffffff11;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    /* === Task List === */
+    ul {
+      list-style: none;
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #888 #222;
+    }
+
+    li {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 14px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border-left: 4px solid #00e676;
+      transition: background 0.3s;
+    }
+
+    li:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* === Task Row === */
+    .task-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* === Task Text === */
+    .task-text {
+      flex: 1;
+      cursor: pointer;
+      font-size: 15px;
+      transition: color 0.3s;
+    }
+
+    .task-text.completed {
+      text-decoration: line-through;
+      color: #bbb;
+    }
+
+    /* === Created Date === */
+    .task-meta {
+      font-size: 0.75rem;
+      color: #aaa;
+      margin-top: 6px;
+    }
+
+    /* === Action Buttons === */
+    .task-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .task-actions button {
+      padding: 6px;
+      font-size: 16px;
+      background: transparent;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .task-actions button:hover {
+      transform: scale(1.2);
+    }
+
+    /* === Action Symbols === */
+    .task-actions .edit-btn {
+      color: #ffd54f;
+    }
+
+    .task-actions .delete-btn {
+      color: #ef5350;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header-row">
+      <h1>📝 My To-Do List</h1>
+      <button class="refresh-btn" onclick="refreshApp()" title="Clear input & refresh tasks">🧹</button>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="taskInput" placeholder="Add a new task..." />
+      <button onclick="addTask()">Add</button>
+    </div>
+
+    <input type="text" id="searchInput" placeholder="Search tasks..." onkeyup="filterTasks()" />
+
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    window.onload = () => {
+      loadTasks();
+    };
+
+    function getTasks() {
+      const tasks = localStorage.getItem('tasks');
+      return tasks ? JSON.parse(tasks) : [];
+    }
+
+    function saveTasks(tasks) {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const text = input.value.trim();
+      if (text === '') return;
+
+      const tasks = getTasks();
+      tasks.push({
+        text,
+        completed: false,
+        createdAt: new Date().toLocaleString()
+      });
+
+      saveTasks(tasks);
+      input.value = '';
+      loadTasks();
+    }
+
+    function deleteTask(index) {
+      const tasks = getTasks();
+      tasks.splice(index, 1);
+      saveTasks(tasks);
+      loadTasks();
+    }
+
+    function toggleComplete(index) {
+      const tasks = getTasks();
+      tasks[index].completed = !tasks[index].completed;
+      saveTasks(tasks);
+      loadTasks();
+    }
+
+    function editTask(index) {
+      const tasks = getTasks();
+      const newText = prompt("Edit your task:", tasks[index].text);
+      if (newText !== null && newText.trim() !== "") {
+        tasks[index].text = newText.trim();
+        saveTasks(tasks);
+        loadTasks();
+      }
+    }
+
+    function loadTasks() {
+      const list = document.getElementById('taskList');
+      list.innerHTML = '';
+      const tasks = getTasks();
+
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+
+        const row = document.createElement('div');
+        row.className = 'task-row';
+
+        const taskText = document.createElement('span');
+        taskText.className = 'task-text' + (task.completed ? ' completed' : '');
+        taskText.textContent = task.text;
+        taskText.onclick = () => toggleComplete(index);
+
+        const actions = document.createElement('div');
+        actions.className = 'task-actions';
+        actions.innerHTML = `
+          <button class="edit-btn" onclick="editTask(${index})" title="Edit">✏</button>
+          <button class="delete-btn" onclick="deleteTask(${index})" title="Delete">❌</button>
+        `;
+
+        row.appendChild(taskText);
+        row.appendChild(actions);
+
+        const meta = document.createElement('div');
+        meta.className = 'task-meta';
+        meta.textContent = `Created: ${task.createdAt}`;
+
+        li.appendChild(row);
+        li.appendChild(meta);
+        list.appendChild(li);
+      });
+    }
+
+    function filterTasks() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const tasks = document.querySelectorAll('.task-text');
+
+      tasks.forEach(task => {
+        const text = task.textContent.toLowerCase();
+        task.closest('li').style.display = text.includes(query) ? '' : 'none';
+      });
+    }
+
+    // ✅ Smart refresh (not full page reload)
+    function refreshApp() {
+      document.getElementById('taskInput').value = '';
+      document.getElementById('searchInput').value = '';
+      loadTasks(); // only re-renders the tasks from localStorage
+    }
+  </script>
+</body>
+</html>
