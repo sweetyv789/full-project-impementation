@@ -1,0 +1,132 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background: #f9f9f9;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #222;
+  color: #fff;
+  position: sticky;
+  top: 0;
+}
+.nav-links {
+  list-style: none;
+  display: flex;
+}
+.nav-links li {
+  margin-left: 1.5rem;
+}
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.nav-links a:hover {
+  color: #ff9800;
+}
+
+/* Hero Section */
+.hero {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+              url('../assets/images/hero-bg.jpg') no-repeat center center/cover;
+  text-align: center;
+  color: white;
+}
+.hero-content h1 {
+  font-size: 3rem;
+}
+.hero-content span {
+  color: #ff9800;
+}
+.hero-content p {
+  margin: 1rem 0;
+}
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background: #ff9800;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+.btn:hover {
+  background: #e68900;
+}
+/* About */
+.about {
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+}
+
+/* Projects */
+.projects {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, #1e1e1e, #2a2a2a); /* NEW BACKGROUND */
+  border-radius: 10px;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.project-card {
+  background: #fff; /* lighter cards for contrast */
+  color: #222;
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+.projects {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9800, #9c27b0);
+  border-radius: 10px;
+}
+
+/* Contact */
+.contact {
+  padding: 2rem;
+  text-align: center;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+}
+form input, form textarea {
+  margin: 0.5rem 0;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
